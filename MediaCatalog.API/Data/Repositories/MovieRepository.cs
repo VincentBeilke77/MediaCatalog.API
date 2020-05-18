@@ -26,7 +26,13 @@ namespace MediaCatalog.API.Data.Repositories
                 .Include(gm => gm.MovieGenres)
                 .ThenInclude(g => g.Genre)
                 .Include(am => am.MovieActors)
-                .ThenInclude(a => a.Actor);
+                .ThenInclude(a => a.Actor)
+                .Include(dm => dm.MovieDirectors)
+                .ThenInclude(d => d.Director)
+                .Include(mtm => mtm.MovieMediaTypes)
+                .ThenInclude(mt => mt.MediaType)
+                .Include(sm => sm.MovieStudios)
+                .ThenInclude(s => s.Studio);
 
             query = query.OrderBy(m => m.Title);
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using MediaCatalog.API.Data.Entities;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace MediaCatalog.API.Models
@@ -19,12 +20,12 @@ namespace MediaCatalog.API.Models
         public int RunTime { get; set; }
         public int ReleaseYear { get; set; }
         public bool Favorite { get; set; }
-        public string Name { get; set; }
-
-        public string RatingShortDescription { get; set; }
-        public string RatingDescription { get; set; }
+        public RatingModel Rating { get; set; }
 
         public ICollection<MovieGenresModel> MovieGenres { get; set; }
         public ICollection<MovieActorsModel> MovieActors { get; set; }
+        public ICollection<MovieDirectorsModel> MovieDirectors { get; set; }
+        public ICollection<MovieMediaTypesModel> MovieMediaTypes { get; set; }
+        public ICollection<MovieStudiosModel> MovieStudios { get; set; }
     }
 }

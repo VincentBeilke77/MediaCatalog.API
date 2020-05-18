@@ -9,23 +9,23 @@ namespace MediaCatalog.API.Models
 {
     public class MovieActorsModel
     {
-        public int ActorId { get; set; }
+        public int Id { get; set; }
 
-        public string ActorFirstName { get; set; }
+        public string FirstName { get; set; }
 
-        public string ActorLastName { get; set; }
+        public string LastName { get; set; }
 
-        public string ActorFullName
+        public string FullName
         {
             get
             {
-                var fullName = ActorLastName;
-                if (string.IsNullOrWhiteSpace(ActorFirstName)) return fullName;
+                var fullName = LastName;
+                if (string.IsNullOrWhiteSpace(FirstName)) return fullName;
                 if (!string.IsNullOrWhiteSpace(fullName))
                 {
                     fullName += ", ";
                 }
-                fullName += ActorFirstName;
+                fullName += FirstName;
                 return fullName;
             }
         }
