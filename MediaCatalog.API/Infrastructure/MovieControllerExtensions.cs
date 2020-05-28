@@ -17,11 +17,13 @@ namespace MediaCatalog.API.Infrastructure
             }
             else
             {
-                Actor actor = new Actor { LastName = movieActor.LastName, FirstName = movieActor.FirstName };
+                var actorId = await controller.ActorRepository.GenerateActorId();
+
+                Actor actor = new Actor { Id = actorId, LastName = movieActor.LastName, FirstName = movieActor.FirstName };
                 controller.ActorRepository.Add(actor);
                 if (await controller.ActorRepository.SaveChangesAsync())
                 {
-                    return new ActorMovie { ActorId = actor.Id, MovieId = movieId };
+                    return new ActorMovie { ActorId = actorId, MovieId = movieId };
                 }
 
                 return null;

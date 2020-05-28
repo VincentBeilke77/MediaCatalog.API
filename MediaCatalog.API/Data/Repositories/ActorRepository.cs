@@ -3,9 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
 
 namespace MediaCatalog.API.Data.Repositories
 {
@@ -45,6 +47,31 @@ namespace MediaCatalog.API.Data.Repositories
                 .Where(a => a.LastName == lastName && a.FirstName == firstName);
 
             return await query.FirstOrDefaultAsync();
+        }
+
+        public async Task<int> GenerateActorId()
+        {
+            _logger.LogInformation("Generating identity for a actor.");
+
+            var id = 0;
+
+            await using var cmd = _context.Database.GetDbConnection().CreateCommand();
+
+            cmd.CommandText = "GetIdentitySeedForTable";
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Add(new SqlParameter(
+                "TableName", "Actor"));
+
+            await _context.Database.OpenConnectionAsync();
+
+            var dr = cmd.ExecuteReaderAsync();
+
+            if (await dr.Result.ReadAsync())
+            {
+                id = dr.GetAwaiter().GetResult().GetInt32("Id");
+            }
+
+            return id;
         }
 
         public async Task<Actor[]> GetActorsByMovieIdAsync(int movieId)
