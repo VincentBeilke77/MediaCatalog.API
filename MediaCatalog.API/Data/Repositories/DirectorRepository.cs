@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 using MediaCatalog.API.Data.Entities;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -67,6 +69,31 @@ namespace MediaCatalog.API.Data.Repositories
             query = query.Where(d => d.LastName == lastName && d.FirstName == firstName);
 
             return await query.FirstOrDefaultAsync();
+        }
+
+        public async Task<int> GenerateDirectorId()
+        {
+            _logger.LogInformation("Generating identity for a movie.");
+
+            var id = 0;
+
+            await using var cmd = _context.Database.GetDbConnection().CreateCommand();
+
+            cmd.CommandText = "GetIdentitySeedForTable";
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Add(new SqlParameter(
+                "TableName", "Director"));
+
+            await _context.Database.OpenConnectionAsync();
+
+            var dr = cmd.ExecuteReaderAsync();
+
+            if (await dr.Result.ReadAsync())
+            {
+                id = dr.GetAwaiter().GetResult().GetInt32("Id");
+            }
+
+            return id;
         }
     }
 }

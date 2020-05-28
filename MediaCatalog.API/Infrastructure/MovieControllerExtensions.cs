@@ -40,11 +40,13 @@ namespace MediaCatalog.API.Infrastructure
             }
             else
             {
-                var director = new Director { LastName = movieDirector.LastName, FirstName = movieDirector.FirstName };
+                var directorId = await controller.DirectorRepository.GenerateDirectorId();
+
+                var director = new Director { Id = directorId, LastName = movieDirector.LastName, FirstName = movieDirector.FirstName };
                 controller.DirectorRepository.Add(director);
                 if (await controller.DirectorRepository.SaveChangesAsync())
                 {
-                    return new DirectorMovie { DirectorId = director.Id, MovieId = movieId };
+                    return new DirectorMovie { DirectorId = directorId, MovieId = movieId };
                 }
 
                 return null;
