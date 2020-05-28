@@ -1,4 +1,5 @@
 ﻿using MediaCatalog.API.Data.Entities;
+using MediaCatalog.API.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -30,10 +31,10 @@ namespace MediaCatalog.API.Data
         {
             base.OnModelCreating(modelBuilder);
             AddManyToManyRelationships(modelBuilder);
-            AddDataModels(modelBuilder);
+            AddTestDataModels(modelBuilder);
         }
 
-        private static void AddDataModels(ModelBuilder modelBuilder)
+        private static void AddTestDataModels(ModelBuilder modelBuilder)
         {
             var actor = new
             {

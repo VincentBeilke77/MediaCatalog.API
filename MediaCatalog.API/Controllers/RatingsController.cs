@@ -125,10 +125,6 @@ namespace MediaCatalog.API.Controllers
                     return Ok();
                 }
             }
-            catch (SqlException sqlEx)
-            {
-                return StatusCode(StatusCodes.Status409Conflict, sqlEx.Message);
-            }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);

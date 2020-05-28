@@ -9,8 +9,8 @@ namespace MediaCatalog.API.Infrastructure
         {
             services.AddScoped<IMovieRepository, MovieRepository>();
             services.AddScoped<IRatingRepository, RatingRepository>();
-            //services.AddScoped<IActorRepository, ActorRepository>();
-            //services.AddScoped<IDirectorRepository, DirectorRepository>();
+            services.AddScoped<IActorRepository, ActorRepository>();
+            services.AddScoped<IDirectorRepository, DirectorRepository>();
             services.AddScoped<IGenreRepository, GenreRepository>();
             //services.AddScoped<IMediaTypeRepository, MediaTypeRepository>();
             //services.AddScoped<IStudioRepository, StudioRepository>();

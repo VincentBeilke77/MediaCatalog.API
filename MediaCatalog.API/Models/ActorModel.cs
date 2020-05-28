@@ -1,14 +1,15 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace MediaCatalog.API.Data.Entities
+namespace MediaCatalog.API.Models
 {
-    public class Actor : BaseEntity
+    public class ActorModel
     {
+        [Key]
+        public int Id { get; set; }
+
         [MaxLength(25, ErrorMessage = "First name can only be 25 characters.")]
         public string FirstName { get; set; }
 
-        [Required]
         [MaxLength(25, ErrorMessage = "Last name can only be 25 characters.")]
         public string LastName { get; set; }
 
@@ -26,7 +27,5 @@ namespace MediaCatalog.API.Data.Entities
                 return fullName;
             }
         }
-
-        public ICollection<ActorMovie> Movies { get; set; }
     }
 }

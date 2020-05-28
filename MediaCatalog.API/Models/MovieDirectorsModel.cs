@@ -9,13 +9,11 @@ namespace MediaCatalog.API.Models
 {
     public class MovieDirectorsModel
     {
-        [Key]
-        public int Id { get; set; }
+        public int DirectorId { get; set; }
 
-        [StringLength(25, ErrorMessage = "Last name can only be 25 characters.")]
+        [StringLength(25, ErrorMessage = "First name can only be 25 characters.")]
         public string FirstName { get; set; }
 
-        [Required]
         [StringLength(25, ErrorMessage = "Last name can only be 25 characters.")]
         public string LastName { get; set; }
 

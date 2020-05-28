@@ -9,10 +9,8 @@ namespace MediaCatalog.API.Models
 {
     public class MovieStudiosModel
     {
-        [Required]
-        public int Id { get; set; }
+        public int StudioId { get; set; }
 
-        [Required]
         [StringLength(25, ErrorMessage = "Studio name can only be 25 characters.")]
         public string Name { get; set; }
 

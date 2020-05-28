@@ -4,8 +4,7 @@ namespace MediaCatalog.API.Models
 {
     public class MovieGenresModel
     {
-        [Required]
-        public int Id { get; set; }
+        public int GenreId { get; set; }
 
         public string Name { get; set; }
         public string Description { get; set; }
