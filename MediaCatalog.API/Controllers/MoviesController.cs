@@ -18,9 +18,10 @@ namespace MediaCatalog.API.Controllers
     [ApiController]
     public class MoviesController : ControllerBase
     {
-        internal ActorRepository ActorRepository { get; }
-        public DirectorRepository DirectorRepository { get; }
-        private readonly MovieRepository _movieRepository;
+        internal IActorRepository ActorRepository { get; }
+        internal IDirectorRepository DirectorRepository { get; }
+
+        private readonly IMovieRepository _movieRepository;
         private readonly IRatingRepository _ratingRepository;
         private readonly IGenreRepository _genreRepository;
         internal IMapper Mapper { get; }
@@ -31,9 +32,9 @@ namespace MediaCatalog.API.Controllers
             IActorRepository actorRepository, IDirectorRepository directorRepository,
             IMapper mapper, LinkGenerator linkGenerator)
         {
-            ActorRepository = (ActorRepository)actorRepository;
-            DirectorRepository = (DirectorRepository)directorRepository;
-            _movieRepository = (MovieRepository)movieRepository;
+            ActorRepository = actorRepository;
+            DirectorRepository = directorRepository;
+            _movieRepository = movieRepository;
             _ratingRepository = ratingRepository;
             _genreRepository = genreRepository;
             Mapper = mapper;
