@@ -14,5 +14,9 @@ namespace MediaCatalog.API.Data.Repositories
         Task<Genre[]> GetAllGenresAsync();
 
         Task<Genre> GetGenreAsync(int genreId);
+
+        Task<int> GenerateGenreId();
+
+        bool CheckForExistingGenreName(string name);
     }
 }

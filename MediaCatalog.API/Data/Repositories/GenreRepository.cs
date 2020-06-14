@@ -3,9 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
 
 namespace MediaCatalog.API.Data.Repositories
 {
@@ -43,6 +45,38 @@ namespace MediaCatalog.API.Data.Repositories
                 .Where(g => g.Id == genreId);
 
             return await query.FirstOrDefaultAsync();
+        }
+
+        public async Task<int> GenerateGenreId()
+        {
+            _logger.LogInformation("Generating identity for a genre.");
+
+            var id = 0;
+
+            await using var cmd = _context.Database.GetDbConnection().CreateCommand();
+
+            cmd.CommandText = "GetIdentitySeedForTable";
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Add(new SqlParameter(
+                "TableName", "Genre"));
+
+            await _context.Database.OpenConnectionAsync();
+
+            var dr = cmd.ExecuteReaderAsync();
+
+            if (await dr.Result.ReadAsync())
+            {
+                id = dr.GetAwaiter().GetResult().GetInt32("Id");
+            }
+
+            return id;
+        }
+
+        public bool CheckForExistingGenreName(string name)
+        {
+            var exists = _context.Genres.Any(g => g.Name.ToLower() == name.ToLower());
+
+            return exists;
         }
     }
 }
