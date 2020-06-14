@@ -26,7 +26,7 @@ namespace MediaCatalog.API.Controllers
         private readonly IMovieRepository _movieRepository;
         private readonly IRatingRepository _ratingRepository;
         private readonly IGenreRepository _genreRepository;
-        internal IMapper Mapper { get; }
+        private readonly IMapper _mapper;
         private readonly LinkGenerator _linkGenerator;
 
         public MoviesController(IMovieRepository movieRepository,
@@ -40,7 +40,7 @@ namespace MediaCatalog.API.Controllers
             _movieRepository = movieRepository;
             _ratingRepository = ratingRepository;
             _genreRepository = genreRepository;
-            Mapper = mapper;
+            _mapper = mapper;
             _linkGenerator = linkGenerator;
         }
 
@@ -51,7 +51,7 @@ namespace MediaCatalog.API.Controllers
             {
                 var results = await _movieRepository.GetAllMoviesAsync();
 
-                return Mapper.Map<MovieModel[]>(results);
+                return _mapper.Map<MovieModel[]>(results);
             }
             catch (Exception ex)
             {
@@ -68,7 +68,7 @@ namespace MediaCatalog.API.Controllers
 
                 if (result == null) return NotFound();
 
-                return Mapper.Map<MovieModel>(result);
+                return _mapper.Map<MovieModel>(result);
             }
             catch (Exception ex)
             {
@@ -85,7 +85,7 @@ namespace MediaCatalog.API.Controllers
 
                 if (!results.Any()) return NotFound();
 
-                return Mapper.Map<MovieModel[]>(results);
+                return _mapper.Map<MovieModel[]>(results);
             }
             catch (Exception ex)
             {
@@ -101,7 +101,7 @@ namespace MediaCatalog.API.Controllers
 
                 if (existing) return BadRequest($"The movie title, {model.Title}, already exists in database.");
 
-                var movie = Mapper.Map<Movie>(model);
+                var movie = _mapper.Map<Movie>(model);
 
                 movie.Id = await _movieRepository.GenerateMovieId();
                 var location = _linkGenerator.GetPathByAction("Get", "Movies", new { movieId = movie.Id });
@@ -172,7 +172,7 @@ namespace MediaCatalog.API.Controllers
 
                 if (await _movieRepository.SaveChangesAsync())
                 {
-                    return Created(location, Mapper.Map<MovieModel>(movie));
+                    return Created(location, _mapper.Map<MovieModel>(movie));
                 }
             }
             catch (Exception ex)
@@ -192,11 +192,11 @@ namespace MediaCatalog.API.Controllers
 
                 if (oldMovie == null) return BadRequest($"The movie title, {model.Title}, does not exist in the database.");
 
-                Mapper.Map(model, oldMovie);
+                _mapper.Map(model, oldMovie);
 
                 if (await _movieRepository.SaveChangesAsync())
                 {
-                    return Mapper.Map<MovieModel>(oldMovie);
+                    return _mapper.Map<MovieModel>(oldMovie);
                 }
             }
             catch (Exception ex)
