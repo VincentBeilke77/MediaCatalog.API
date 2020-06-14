@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using MediaCatalog.API.Infrastructure;
@@ -20,6 +21,7 @@ namespace MediaCatalog.API.Controllers
     {
         internal IActorRepository ActorRepository { get; }
         internal IDirectorRepository DirectorRepository { get; }
+        public IStudioRepository StudioRepository { get; }
 
         private readonly IMovieRepository _movieRepository;
         private readonly IRatingRepository _ratingRepository;
@@ -30,10 +32,11 @@ namespace MediaCatalog.API.Controllers
         public MoviesController(IMovieRepository movieRepository,
             IRatingRepository ratingRepository, IGenreRepository genreRepository,
             IActorRepository actorRepository, IDirectorRepository directorRepository,
-            IMapper mapper, LinkGenerator linkGenerator)
+            IStudioRepository studioRepository, IMapper mapper, LinkGenerator linkGenerator)
         {
             ActorRepository = actorRepository;
             DirectorRepository = directorRepository;
+            StudioRepository = studioRepository;
             _movieRepository = movieRepository;
             _ratingRepository = ratingRepository;
             _genreRepository = genreRepository;
@@ -150,6 +153,19 @@ namespace MediaCatalog.API.Controllers
                     }
 
                     movie.MovieDirectors = movieDirectors;
+                }
+
+                if (model.MovieStudios != null)
+                {
+                    var movieStudios = new List<StudioMovie>();
+                    foreach (var movieStudio in model.MovieStudios)
+                    {
+                        var studioMovie = await this.GetMovieStudioActionResult(movieStudio, model.Id);
+                        if (studioMovie == null) return BadRequest($"Could not add the studio, {movieStudio.Name}");
+                        movieStudios.Add(studioMovie);
+                    }
+
+                    movie.MovieStudios = movieStudios;
                 }
 
                 _movieRepository.Add(movie);

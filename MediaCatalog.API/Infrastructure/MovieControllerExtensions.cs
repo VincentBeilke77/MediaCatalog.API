@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using MediaCatalog.API.Controllers;
 using MediaCatalog.API.Data.Entities;
 using MediaCatalog.API.Models;
@@ -47,6 +46,29 @@ namespace MediaCatalog.API.Infrastructure
                 if (await controller.DirectorRepository.SaveChangesAsync())
                 {
                     return new DirectorMovie { DirectorId = directorId, MovieId = movieId };
+                }
+
+                return null;
+            }
+        }
+
+        internal static async Task<StudioMovie> GetMovieStudioActionResult(this MoviesController controller, MovieStudiosModel movieStudios,
+            int movieId)
+        {
+            if (movieStudios.StudioId != 0)
+            {
+                var director = await controller.StudioRepository.GetStudioAsync(movieStudios.StudioId);
+                return new StudioMovie { StudioId = director.Id, MovieId = movieId };
+            }
+            else
+            {
+                var studioId = await controller.DirectorRepository.GenerateDirectorId();
+
+                var studio = new Studio { Id = studioId, Name = movieStudios.Name, Description = movieStudios.Description };
+                controller.DirectorRepository.Add(studio);
+                if (await controller.DirectorRepository.SaveChangesAsync())
+                {
+                    return new StudioMovie { StudioId = studioId, MovieId = movieId };
                 }
 
                 return null;
