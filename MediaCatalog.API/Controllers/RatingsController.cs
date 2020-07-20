@@ -10,6 +10,10 @@ using System.Threading.Tasks;
 
 namespace MediaCatalog.API.Controllers
 {
+    /// <summary>
+    ///
+    /// </summary>
+    [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
     public class RatingsController : ControllerBase
@@ -18,6 +22,12 @@ namespace MediaCatalog.API.Controllers
         private readonly IMapper _mapper;
         private readonly LinkGenerator _linkGenerator;
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="repository"></param>
+        /// <param name="mapper"></param>
+        /// <param name="linkGenerator"></param>
         public RatingsController(IRatingRepository repository, IMapper mapper, LinkGenerator linkGenerator)
         {
             _repository = (RatingRepository)repository;
@@ -25,6 +35,10 @@ namespace MediaCatalog.API.Controllers
             _linkGenerator = linkGenerator;
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<RatingModel[]>> Get()
         {
@@ -40,6 +54,11 @@ namespace MediaCatalog.API.Controllers
             }
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="ratingId"></param>
+        /// <returns></returns>
         [HttpGet("{ratingId}")]
         public async Task<ActionResult<RatingModel>> Get(int ratingId)
         {
@@ -55,6 +74,12 @@ namespace MediaCatalog.API.Controllers
             }
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
         public async Task<ActionResult<RatingModel>> Post(RatingModel model)
         {
             try
@@ -83,6 +108,12 @@ namespace MediaCatalog.API.Controllers
             return BadRequest();
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="ratingId"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPut("{ratingId}")]
         public async Task<ActionResult<RatingModel>> Put(int ratingId, RatingModel model)
         {
@@ -106,6 +137,11 @@ namespace MediaCatalog.API.Controllers
             return BadRequest();
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="ratingId"></param>
+        /// <returns></returns>
         [HttpDelete("{ratingId}")]
         public async Task<IActionResult> Delete(int ratingId)
         {

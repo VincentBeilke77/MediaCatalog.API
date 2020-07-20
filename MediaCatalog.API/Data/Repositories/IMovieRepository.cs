@@ -17,7 +17,9 @@ namespace MediaCatalog.API.Data.Repositories
 
         Task<Movie[]> SearchMoviesByTitle(string title);
 
-        bool CheckForExistingMovieTitle(string title);
+        bool CheckForExistingMovie(string title);
+
+        bool CheckForExistingMovie(int id);
 
         Task<int> GenerateMovieId();
     }

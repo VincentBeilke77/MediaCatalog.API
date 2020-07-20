@@ -24,5 +24,7 @@ namespace MediaCatalog.API.Data.Repositories
         Task<Actor> GetActorByNameAsync(string lastName, string firstName);
 
         Task<int> GenerateActorId();
+
+        Task<Actor[]> GetActorsByNameSearchValue(string value);
     }
 }

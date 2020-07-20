@@ -7,14 +7,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using MediaCatalog.API.Infrastructure;
-using MediaCatalog.API.Migrations;
 
 namespace MediaCatalog.API.Controllers
 {
+    /// <summary>
+    ///
+    /// </summary>
+    [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
     public class MoviesController : ControllerBase
@@ -29,6 +31,17 @@ namespace MediaCatalog.API.Controllers
         private readonly IMapper _mapper;
         private readonly LinkGenerator _linkGenerator;
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="movieRepository"></param>
+        /// <param name="ratingRepository"></param>
+        /// <param name="genreRepository"></param>
+        /// <param name="actorRepository"></param>
+        /// <param name="directorRepository"></param>
+        /// <param name="studioRepository"></param>
+        /// <param name="mapper"></param>
+        /// <param name="linkGenerator"></param>
         public MoviesController(IMovieRepository movieRepository,
             IRatingRepository ratingRepository, IGenreRepository genreRepository,
             IActorRepository actorRepository, IDirectorRepository directorRepository,
@@ -44,6 +57,10 @@ namespace MediaCatalog.API.Controllers
             _linkGenerator = linkGenerator;
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<MovieModel[]>> Get()
         {
@@ -51,7 +68,9 @@ namespace MediaCatalog.API.Controllers
             {
                 var results = await _movieRepository.GetAllMoviesAsync();
 
-                return _mapper.Map<MovieModel[]>(results);
+                if (results.Length == 0) return NotFound("No movies found.");
+
+                return Ok(_mapper.Map<MovieModel[]>(results));
             }
             catch (Exception ex)
             {
@@ -59,6 +78,11 @@ namespace MediaCatalog.API.Controllers
             }
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="movieId"></param>
+        /// <returns></returns>
         [HttpGet("{movieId}")]
         public async Task<ActionResult<MovieModel>> Get(int movieId)
         {
@@ -66,9 +90,9 @@ namespace MediaCatalog.API.Controllers
             {
                 var result = await _movieRepository.GetMovieAsync(movieId);
 
-                if (result == null) return NotFound();
+                if (result == null) return NotFound($"No movie with id, {movieId}, was found.");
 
-                return _mapper.Map<MovieModel>(result);
+                return Ok(_mapper.Map<MovieModel>(result));
             }
             catch (Exception ex)
             {
@@ -76,6 +100,11 @@ namespace MediaCatalog.API.Controllers
             }
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="title"></param>
+        /// <returns></returns>
         [HttpGet("search")]
         public async Task<ActionResult<MovieModel[]>> SearchByTitle(string title)
         {
@@ -83,9 +112,9 @@ namespace MediaCatalog.API.Controllers
             {
                 var results = await _movieRepository.SearchMoviesByTitle(title);
 
-                if (!results.Any()) return NotFound();
+                if (!results.Any()) return NotFound($"No movies with {title} in them where found.");
 
-                return _mapper.Map<MovieModel[]>(results);
+                return Ok(_mapper.Map<MovieModel[]>(results));
             }
             catch (Exception ex)
             {
@@ -93,11 +122,17 @@ namespace MediaCatalog.API.Controllers
             }
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
         public async Task<ActionResult<MovieModel>> Post(MovieModel model)
         {
             try
             {
-                var existing = _movieRepository.CheckForExistingMovieTitle(model.Title);
+                var existing = _movieRepository.CheckForExistingMovie(model.Title);
 
                 if (existing) return BadRequest($"The movie title, {model.Title}, already exists in database.");
 
@@ -183,6 +218,12 @@ namespace MediaCatalog.API.Controllers
             return BadRequest();
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="movieId"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPut("{movieId:int}")]
         public async Task<ActionResult<MovieModel>> Put(int movieId, MovieModel model)
         {
@@ -196,7 +237,7 @@ namespace MediaCatalog.API.Controllers
 
                 if (await _movieRepository.SaveChangesAsync())
                 {
-                    return _mapper.Map<MovieModel>(oldMovie);
+                    return Ok(_mapper.Map<MovieModel>(oldMovie));
                 }
             }
             catch (Exception ex)
@@ -204,9 +245,14 @@ namespace MediaCatalog.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
 
-            return BadRequest();
+            return BadRequest($"The movie, {model.Title}, was not updated.");
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="movieId"></param>
+        /// <returns></returns>
         [HttpDelete("{movieId}")]
         public async Task<IActionResult> Delete(int movieId)
         {
@@ -220,7 +266,7 @@ namespace MediaCatalog.API.Controllers
 
                 if (await _movieRepository.SaveChangesAsync())
                 {
-                    return Ok();
+                    return Ok($"The movie for movie id, {movieId}, was deleted.");
                 }
             }
             catch (Exception ex)
@@ -228,7 +274,7 @@ namespace MediaCatalog.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
 
-            return BadRequest();
+            return BadRequest($"The movie with the id, {movieId}, was not deleted.");
         }
     }
 }

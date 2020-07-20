@@ -11,17 +11,30 @@ using Microsoft.Data.SqlClient;
 
 namespace MediaCatalog.API.Data.Repositories
 {
+    /// <summary>
+    ///
+    /// </summary>
     public class ActorRepository : BaseRepository, IActorRepository
     {
         private readonly MediaCatalogContext _context;
         private readonly ILogger<BaseRepository> _logger;
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="logger"></param>
         public ActorRepository(MediaCatalogContext context, ILogger<BaseRepository> logger) : base(context, logger)
         {
             _context = context;
             _logger = logger;
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="actorId"></param>
+        /// <returns></returns>
         public async Task<Actor> GetActorAync(int actorId)
         {
             _logger.LogInformation($"Getting actor info for {actorId}");
@@ -35,6 +48,12 @@ namespace MediaCatalog.API.Data.Repositories
             return await query.FirstOrDefaultAsync();
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="lastName"></param>
+        /// <param name="firstName"></param>
+        /// <returns></returns>
         public async Task<Actor> GetActorByNameAsync(string lastName, string firstName)
         {
             _logger.LogInformation($"Getting actor info for {lastName}, {firstName}");
@@ -49,6 +68,10 @@ namespace MediaCatalog.API.Data.Repositories
             return await query.FirstOrDefaultAsync();
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <returns></returns>
         public async Task<int> GenerateActorId()
         {
             _logger.LogInformation("Generating identity for a actor.");
@@ -74,6 +97,11 @@ namespace MediaCatalog.API.Data.Repositories
             return id;
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="movieId"></param>
+        /// <returns></returns>
         public async Task<Actor[]> GetActorsByMovieIdAsync(int movieId)
         {
             _logger.LogInformation($"Getting actor info for {movieId}");
@@ -87,6 +115,10 @@ namespace MediaCatalog.API.Data.Repositories
             return await query.ToArrayAsync();
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <returns></returns>
         public async Task<Actor[]> GetAllActorsAsync()
         {
             _logger.LogInformation($"Getting all actors info");
@@ -96,6 +128,24 @@ namespace MediaCatalog.API.Data.Repositories
                 .ThenInclude(m => m.Movie);
 
             query = query.OrderBy(a => a.FullName);
+
+            return await query.ToArrayAsync();
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public async Task<Actor[]> GetActorsByNameSearchValue(string value)
+        {
+            _logger.LogInformation($"Getting actors with ${value} in their name.");
+
+            IQueryable<Actor> query = _context.Actors
+                .Include(am => am.Movies)
+                .ThenInclude(m => m.Movie);
+
+            query = query.Where(a => a.FirstName.Contains(value) || a.LastName.Contains(value));
 
             return await query.ToArrayAsync();
         }

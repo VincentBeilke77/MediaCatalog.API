@@ -9,17 +9,29 @@ using Microsoft.Data.SqlClient;
 
 namespace MediaCatalog.API.Data.Repositories
 {
+    /// <summary>
+    ///
+    /// </summary>
     public class MovieRepository : BaseRepository, IMovieRepository
     {
         private readonly MediaCatalogContext _context;
         private readonly ILogger<MovieRepository> _logger;
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="logger"></param>
         public MovieRepository(MediaCatalogContext context, ILogger<MovieRepository> logger) : base(context, logger)
         {
             _context = context;
             _logger = logger;
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <returns></returns>
         public async Task<Movie[]> GetAllMoviesAsync()
         {
             _logger.LogInformation($"Getting all Movies");
@@ -42,6 +54,11 @@ namespace MediaCatalog.API.Data.Repositories
             return await query.ToArrayAsync();
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="movieId"></param>
+        /// <returns></returns>
         public async Task<Movie> GetMovieAsync(int movieId)
         {
             _logger.LogInformation($"Getting movie info for {movieId}");
@@ -64,6 +81,11 @@ namespace MediaCatalog.API.Data.Repositories
             return await query.FirstOrDefaultAsync();
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="title"></param>
+        /// <returns></returns>
         public async Task<Movie[]> SearchMoviesByTitle(string title)
         {
             _logger.LogInformation($"Getting movies with {title} in them");
@@ -86,13 +108,34 @@ namespace MediaCatalog.API.Data.Repositories
             return await query.ToArrayAsync();
         }
 
-        public bool CheckForExistingMovieTitle(string title)
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="title"></param>
+        /// <returns></returns>
+        public bool CheckForExistingMovie(string title)
         {
             var exists = _context.Movies.Any(m => m.Title == title);
 
             return exists;
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public bool CheckForExistingMovie(int id)
+        {
+            var exists = _context.Movies.Any(m => m.Id == id);
+
+            return exists;
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <returns></returns>
         public async Task<int> GenerateMovieId()
         {
             _logger.LogInformation("Generating identity for a movie.");

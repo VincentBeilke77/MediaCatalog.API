@@ -10,6 +10,10 @@ using Microsoft.AspNetCore.Routing;
 
 namespace MediaCatalog.API.Controllers
 {
+    /// <summary>
+    /// A controller for CRUD operations on the Genres Table in the Media Catalog Database.
+    /// </summary>
+    [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
     public class GenresController : ControllerBase
@@ -18,6 +22,12 @@ namespace MediaCatalog.API.Controllers
         private readonly IMapper _mapper;
         private readonly LinkGenerator _linkGenerator;
 
+        /// <summary>
+        /// Constructor for retrieving the necessary services for the CRUD methods.
+        /// </summary>
+        /// <param name="repository"></param>
+        /// <param name="mapper"></param>
+        /// <param name="linkGenerator"></param>
         public GenresController(IGenreRepository repository, IMapper mapper, LinkGenerator linkGenerator)
         {
             _repository = repository;
@@ -25,7 +35,16 @@ namespace MediaCatalog.API.Controllers
             _linkGenerator = linkGenerator;
         }
 
+        /// <summary>
+        /// Retrieves all the Genres listed in the Media Catalog database, along with all the movies
+        /// associated with each Genre.
+        /// </summary>
+        /// <returns>A <code>IEnumerable</code> of <code>GenreModel</code></returns>
+        /// <response code="200">Returns a <code>IEnumerable</code> of <code>GenreModel</code></response>
+        /// <response code="500">If there is an issue with the retrieval of the data</response>
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<GenreModel[]>> Get()
         {
             try
@@ -40,7 +59,17 @@ namespace MediaCatalog.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Retrieves the Genre linked to the id, along with all the movies
+        /// associated with Genre.
+        /// </summary>
+        /// <param name="genreId"></param>
+        /// <returns>A <code>GenreModel</code></returns>
+        /// <response code="200">Returns a <code>GenreModel</code></response>
+        /// <response code="500">If there is an issue with the retrieval of the data</response>
         [HttpGet("{genreId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<GenreModel>> Get(int genreId)
         {
             try
@@ -57,6 +86,18 @@ namespace MediaCatalog.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Creates a new Genre, and returns the newly created Genre.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        /// <response code="201">Returns the newly created genre</response>
+        /// <response code="400">If the genre model already exists in the database</response>
+        /// <response code="500">If there is an issue with the retrieval of the data</response>
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<GenreModel>> Post(GenreModel model)
         {
             try
@@ -86,7 +127,17 @@ namespace MediaCatalog.API.Controllers
             return BadRequest();
         }
 
+        /// <summary>
+        /// Updates the Genre being passed in, and returns the updated Genre.
+        /// </summary>
+        /// <param name="genreId"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        /// <response code="400">If the genre to be updated does not exists in the database</response>
+        /// <response code="500">If there is an issue with the retrieval of the data</response>
         [HttpPut("{genreId:int}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<GenreModel>> Put(int genreId, GenreModel model)
         {
             try
@@ -110,7 +161,18 @@ namespace MediaCatalog.API.Controllers
             return BadRequest();
         }
 
+        /// <summary>
+        /// Deletes the requested Genre from the database.
+        /// </summary>
+        /// <param name="genreId"></param>
+        /// <returns></returns>
+        /// <response code="200">returns an ok if the genre is successfully deleted</response>
+        /// <response code="400">If the genre to be updated does not exists in the database</response>
+        /// <response code="500">If there is an issue with the retrieval of the data</response>
         [HttpDelete("{genreId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Delete(int genreId)
         {
             try

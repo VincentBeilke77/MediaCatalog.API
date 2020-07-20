@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaCatalog.API", "MediaCatalog.API\MediaCatalog.API.csproj", "{E255A7D5-F768-4B3C-B961-1F2FFDB85DA5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaCatalog.API", "MediaCatalog.API\MediaCatalog.API.csproj", "{E255A7D5-F768-4B3C-B961-1F2FFDB85DA5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Media.Catalog.API.Test", "Tests\Media.Catalog.API.Test\Media.Catalog.API.Test.csproj", "{61ACEC7D-0DA7-48DC-AE39-7085A13BC0C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{E255A7D5-F768-4B3C-B961-1F2FFDB85DA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E255A7D5-F768-4B3C-B961-1F2FFDB85DA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E255A7D5-F768-4B3C-B961-1F2FFDB85DA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61ACEC7D-0DA7-48DC-AE39-7085A13BC0C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61ACEC7D-0DA7-48DC-AE39-7085A13BC0C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61ACEC7D-0DA7-48DC-AE39-7085A13BC0C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61ACEC7D-0DA7-48DC-AE39-7085A13BC0C4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
