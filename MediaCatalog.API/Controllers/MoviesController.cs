@@ -32,16 +32,16 @@ namespace MediaCatalog.API.Controllers
         private readonly LinkGenerator _linkGenerator;
 
         /// <summary>
-        ///
+        /// Constructor that sets up the repositories for the controller.
         /// </summary>
-        /// <param name="movieRepository"></param>
-        /// <param name="ratingRepository"></param>
-        /// <param name="genreRepository"></param>
-        /// <param name="actorRepository"></param>
-        /// <param name="directorRepository"></param>
-        /// <param name="studioRepository"></param>
-        /// <param name="mapper"></param>
-        /// <param name="linkGenerator"></param>
+        /// <param name="movieRepository">Interface for the movies.</param>
+        /// <param name="ratingRepository">Interface for the ratings.</param>
+        /// <param name="genreRepository">Interface for the genres.</param>
+        /// <param name="actorRepository">Interface for the actors.</param>
+        /// <param name="directorRepository">Interface for the directors.</param>
+        /// <param name="studioRepository">Interface for the studios.</param>
+        /// <param name="mapper">Interface for mapping models to entities and vice versa.</param>
+        /// <param name="linkGenerator">Used to generate a url path based on the action being used.</param>
         public MoviesController(IMovieRepository movieRepository,
             IRatingRepository ratingRepository, IGenreRepository genreRepository,
             IActorRepository actorRepository, IDirectorRepository directorRepository,
@@ -58,9 +58,17 @@ namespace MediaCatalog.API.Controllers
         }
 
         /// <summary>
-        ///
+        /// Retrieves all the Movies in the Media Catalog database, and all associated entities.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>
+        /// An <code>ActionResult</code> containing:
+        /// a <code>Ok</code> status code with the list of movies,
+        /// a <code>NotFound</code> status code if nothing is found,
+        /// or a <code>InternalServerError</code> if there is an issue with retrieving the data.
+        /// </returns>
+        /// <response code="200">Returns an <code>ActionResult</code> containing a <code>MovieModel[]</code>.</response>
+        /// <response code="404">If no movies can be found.</response>
+        /// <response code="500">If there is an issue with the retrieval of the data.</response>
         [HttpGet]
         public async Task<ActionResult<MovieModel[]>> Get()
         {
@@ -79,10 +87,18 @@ namespace MediaCatalog.API.Controllers
         }
 
         /// <summary>
-        ///
+        /// Retrieves the Movie linked to the id, along with all associated entities.
         /// </summary>
-        /// <param name="movieId"></param>
-        /// <returns></returns>
+        /// <param name="movieId">Id of the movie being looked for.</param>
+        /// <returns>
+        /// An <code>ActionResult</code> containing:
+        /// a <code>Ok</code> status code with the movie related to the id,
+        /// a <code>NotFound</code> status code if no movie was found,
+        /// or a <code>InternalServerError</code> if there is an issue with retrieving the data.
+        /// </returns>
+        /// <response code="200">Returns an <code>ActionResult</code> containing a <code>MovieModel</code>.</response>
+        /// <response code="404">If a movie cannot be found with the requested id.</response>
+        /// <response code="500">If there is an issue with the retrieval of the data.</response>
         [HttpGet("{movieId}")]
         public async Task<ActionResult<MovieModel>> Get(int movieId)
         {
@@ -101,18 +117,26 @@ namespace MediaCatalog.API.Controllers
         }
 
         /// <summary>
-        ///
+        /// Retrieves any Movies with the requested search value, and any associated entities.
         /// </summary>
-        /// <param name="title"></param>
-        /// <returns></returns>
+        /// <param name="search">A <code>String</code>search value for searching all the movie titles.</param>>
+        /// <returns>
+        /// An <code>ActionResult</code> containing:
+        /// a <code>Ok</code> status code with the list of movies that fit the search value,
+        /// a <code>NotFound</code> status code if nothing is found,
+        /// or a <code>InternalServerError</code> if there is an issue with retrieving the data.
+        /// </returns>
+        /// <response code="200">Returns an <code>ActionResult</code> containing a <code>MovieModel[]</code>.</response>
+        /// <response code="404">If no movies can be found containing the search value.</response>
+        /// <response code="500">If there is an issue with the retrieval of the data.</response>
         [HttpGet("search")]
-        public async Task<ActionResult<MovieModel[]>> SearchByTitle(string title)
+        public async Task<ActionResult<MovieModel[]>> SearchByTitle(string search)
         {
             try
             {
-                var results = await _movieRepository.SearchMoviesByTitle(title);
+                var results = await _movieRepository.SearchMoviesByTitle(search);
 
-                if (!results.Any()) return NotFound($"No movies with {title} in them where found.");
+                if (!results.Any()) return NotFound($"No movies with {search} in them where found.");
 
                 return Ok(_mapper.Map<MovieModel[]>(results));
             }
@@ -123,10 +147,19 @@ namespace MediaCatalog.API.Controllers
         }
 
         /// <summary>
-        ///
+        /// Creates a new Movie, and returns the newly created Movie.
         /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
+        /// <param name="model">The <code>MovieModel</code> containing the new movie to be updated.</param>
+        /// <returns>
+        /// An <code>ActionResult</code> containing:
+        /// a <code>Create</code> status code with the newly created movie,
+        /// a <code>BadRequest</code> status code if their is an existing movie with the title given already,
+        /// or a <code>InternalServerError</code> if there is an issue with retrieving the data.
+        /// </returns>
+        /// <response code="201">Returns the newly created <Code>MovieModel</Code>.</response>
+        /// <response code="400">If there is existing movie with the title given. Also if there is an issue with
+        /// creating the new movie, such as a non-existing rating, genre,  actor, director or studio.</response>
+        /// <response code="500">If there is an issue with the retrieval of the data.</response>
         [HttpPost]
         public async Task<ActionResult<MovieModel>> Post(MovieModel model)
         {
@@ -219,11 +252,22 @@ namespace MediaCatalog.API.Controllers
         }
 
         /// <summary>
-        ///
+        /// Updates the requested Movie, and returns the updated Movie.
         /// </summary>
-        /// <param name="movieId"></param>
-        /// <param name="model"></param>
-        /// <returns></returns>
+        /// <param name="movieId">An <code>Integer</code> containing the id of the movie to  be updated.</param>
+        /// <param name="model">A <code>MovieModel</code> containing the movie with the updated values to be saved.</param>
+        /// <returns>
+        /// An <code>ActionResult</code> containing:
+        /// a <code>Ok</code> status code with the now updated movie,
+        /// a <code>BadRequest</code> status code if their is not an existing movie with the title given,
+        /// or a <code>InternalServerError</code> if there is an issue with retrieving the data.
+        /// </returns>
+        /// <response code="200">Returns the updated <Code>MovieModel.</Code></response>
+        /// <response code="400">If the Movie to be updated does not exists in the database.</response>
+        /// <response code="500">If there is an issue with the retrieval of the data.</response>
+        [HttpPut("{genreId:int}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPut("{movieId:int}")]
         public async Task<ActionResult<MovieModel>> Put(int movieId, MovieModel model)
         {
@@ -249,10 +293,18 @@ namespace MediaCatalog.API.Controllers
         }
 
         /// <summary>
-        ///
+        /// Deletes the requested Movie.
         /// </summary>
-        /// <param name="movieId"></param>
-        /// <returns></returns>
+        /// <param name="movieId">An <code>Integer</code> containing the id of the movie to be deleted.</param>
+        /// <returns>
+        /// An <code>ActionResult</code> containing:
+        /// a <code>Ok</code> status code and the movie has been deleted,
+        /// a <code>BadRequest</code> status code if their is not an existing movie with the title given,
+        /// or a <code>InternalServerError</code> if there is an issue with deleting the data.
+        /// </returns>
+        /// <response code="200">returns an ok if the Moive is successfully deleted.</response>
+        /// <response code="400">If the Movie to be deleted does not exists in the database</response>
+        /// <response code="500">If there is an issue with the retrieval of the data.</response>
         [HttpDelete("{movieId}")]
         public async Task<IActionResult> Delete(int movieId)
         {
