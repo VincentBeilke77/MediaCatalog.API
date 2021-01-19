@@ -1,0 +1,24 @@
+{
+  "name": "mediacatalog.api",
+  "version": "1.0.0",
+  "description": "An API for retrieving movie information that is stored in a database.",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VincentBeilke77/MediaCatalog.API.git"
+  },
+  "keywords": [
+    "Media",
+    "Catalog",
+    "API"
+  ],
+  "author": "Vincent Beilke",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VincentBeilke77/MediaCatalog.API/issues"
+  },
+  "homepage": "https://github.com/VincentBeilke77/MediaCatalog.API#readme"
+}
