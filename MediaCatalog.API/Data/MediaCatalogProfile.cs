@@ -47,6 +47,11 @@ namespace MediaCatalog.API.Data
                 .ReverseMap();
             CreateMap<ActorMovie, ActorMoviesModel>()
                 .ReverseMap();
+
+            CreateMap<Director, DirectorModel>()
+                .ReverseMap();
+            CreateMap<DirectorMovie, DirectorMoviesModel>()
+                .ReverseMap();
         }
     }
 }
