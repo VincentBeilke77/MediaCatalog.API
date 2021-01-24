@@ -11,12 +11,12 @@ namespace MediaCatalog.API.Infrastructure
         {
             if (movieActor.ActorId != 0)
             {
-                var actor = await controller.ActorRepository.GetActorAync(movieActor.ActorId);
+                var actor = await controller.ActorRepository.GetActorAsync(movieActor.ActorId);
                 return new ActorMovie { ActorId = actor.Id, MovieId = movieId };
             }
             else
             {
-                var actorId = await controller.ActorRepository.GenerateActorId();
+                var actorId = controller.ActorRepository.GenerateActorId();
 
                 Actor actor = new Actor { Id = actorId, LastName = movieActor.LastName, FirstName = movieActor.FirstName };
                 controller.ActorRepository.Add(actor);
