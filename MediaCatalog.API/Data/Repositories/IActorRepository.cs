@@ -17,13 +17,13 @@ namespace MediaCatalog.API.Data.Repositories
 
         Task<Actor[]> GetAllActorsAsync();
 
-        Task<Actor> GetActorAync(int actorId);
+        Task<Actor> GetActorAsync(int actorId);
 
         Task<Actor[]> GetActorsByMovieIdAsync(int movieId);
 
         Task<Actor> GetActorByNameAsync(string lastName, string firstName);
 
-        Task<int> GenerateActorId();
+        int GenerateActorId();
 
         Task<Actor[]> GetActorsByNameSearchValue(string value);
     }

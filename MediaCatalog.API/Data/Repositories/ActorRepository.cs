@@ -35,7 +35,7 @@ namespace MediaCatalog.API.Data.Repositories
         /// </summary>
         /// <param name="actorId"></param>
         /// <returns></returns>
-        public async Task<Actor> GetActorAync(int actorId)
+        public async Task<Actor> GetActorAsync(int actorId)
         {
             _logger.LogInformation($"Getting actor info for {actorId}");
 
@@ -72,26 +72,26 @@ namespace MediaCatalog.API.Data.Repositories
         ///
         /// </summary>
         /// <returns></returns>
-        public async Task<int> GenerateActorId()
+        public int GenerateActorId()
         {
             _logger.LogInformation("Generating identity for a actor.");
 
             var id = 0;
 
-            await using var cmd = _context.Database.GetDbConnection().CreateCommand();
+            using var cmd = _context.Database.GetDbConnection().CreateCommand();
 
             cmd.CommandText = "GetIdentitySeedForTable";
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.Add(new SqlParameter(
                 "TableName", "Actor"));
 
-            await _context.Database.OpenConnectionAsync();
+            _context.Database.OpenConnection();
 
-            var dr = cmd.ExecuteReaderAsync();
+            var dr = cmd.ExecuteReader();
 
-            if (await dr.Result.ReadAsync())
+            if (dr.Read())
             {
-                id = dr.GetAwaiter().GetResult().GetInt32("Id");
+                id = dr.GetInt32("Id");
             }
 
             return id;

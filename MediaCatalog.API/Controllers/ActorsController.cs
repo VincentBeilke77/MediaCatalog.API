@@ -5,8 +5,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using System;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using MediaCatalog.API.Data.Entities;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace MediaCatalog.API.Controllers
 {
@@ -41,7 +43,15 @@ namespace MediaCatalog.API.Controllers
         /// <summary>
         /// Retrieves all Actors listed in the Media Catalog Database.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>
+        /// An <code>ActionResult</code> containing:
+        /// a <code>Ok</code> status code with the list of all actors,
+        /// a <code>NotFound</code> status code if nothing is found,
+        /// or a <code>InternalServerError</code> if there is an issue with retrieving the data.
+        /// </returns>
+        /// <response code="200">Returns an <code>ActionResult</code> containing a <code>ActorModel[]</code>.</response>
+        /// <response code="404">If no actors can be found.</response>
+        /// <response code="500">If there is an issue with the retrieval of the data.</response>
         [HttpGet]
         public async Task<ActionResult<ActorModel[]>> Get()
         {
@@ -49,7 +59,9 @@ namespace MediaCatalog.API.Controllers
             {
                 var results = await _actorRepository.GetAllActorsAsync();
 
-                return _mapper.Map<ActorModel[]>(results);
+                if (results.Length == 0) return NotFound("No actors found.");
+
+                return Ok(_mapper.Map<ActorModel[]>(results));
             }
             catch (Exception ex)
             {
@@ -58,18 +70,28 @@ namespace MediaCatalog.API.Controllers
         }
 
         /// <summary>
-        ///
+        /// Retrieves the Actor linked to the id, and any associated entities.
         /// </summary>
         /// <param name="actorId"></param>
-        /// <returns></returns>
+        /// <returns>
+        /// An <code>ActionResult</code> containing:
+        /// a <code>Ok</code> status code with an actor associated with the id,
+        /// a <code>NotFound</code> status code if nothing is found,
+        /// or a <code>InternalServerError</code> if there is an issue with retrieving the data.
+        /// </returns>
+        /// <response code="200">Returns an <code>ActionResult</code> containing a <code>ActorModel</code>.</response>
+        /// <response code="404">If an actor cannot be found with the requested id.</response>
+        /// <response code="500">If there is an issue with the retrieval of the data.</response>
         [HttpGet("{actorId}")]
         public async Task<ActionResult<ActorModel>> Get(int actorId)
         {
             try
             {
-                var results = await _actorRepository.GetActorAync(actorId);
+                var results = await _actorRepository.GetActorAsync(actorId);
 
-                return _mapper.Map<ActorModel>(results);
+                if (results == null) return NotFound($"No actor with id, {actorId}, has been found.");
+
+                return Ok(_mapper.Map<ActorModel>(results));
             }
             catch (Exception ex)
             {
@@ -78,10 +100,18 @@ namespace MediaCatalog.API.Controllers
         }
 
         /// <summary>
-        ///
+        /// Retrieves any Actors with the requested search value, and any associated entities.
         /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <param name="value">A <code>String</code>search value for searching all the actor's names.</param>
+        /// <returns>
+        /// An <code>ActionResult</code> containing:
+        /// a <code>Ok</code> status code with the list of actors that fit the search value,
+        /// a <code>NotFound</code> status code if nothing is found,
+        /// or a <code>InternalServerError</code> if there is an issue with retrieving the data.
+        /// </returns>
+        /// <response code="200">Returns an <code>ActionResult</code> containing a <code>ActorModel[]</code>.</response>
+        /// <response code="404">If no actors can be found containing the search value.</response>
+        /// <response code="500">If there is an issue with the retrieval of the data.</response>
         [HttpGet]
         [Route("search")]
         public async Task<ActionResult<ActorModel[]>> SearchActorNames(string value)
@@ -90,7 +120,9 @@ namespace MediaCatalog.API.Controllers
             {
                 var results = await _actorRepository.GetActorsByNameSearchValue(value);
 
-                return _mapper.Map<ActorModel[]>(results);
+                if (!results.Any()) return NotFound($"No actors found containing {value} in their name.");
+
+                return Ok(_mapper.Map<ActorModel[]>(results));
             }
             catch (Exception ex)
             {
@@ -101,10 +133,39 @@ namespace MediaCatalog.API.Controllers
         /// <summary>
         ///
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="movieId"></param>
         /// <returns></returns>
+        public async Task<ActionResult<ActorModel[]>> GetActorsAssociatedWithMovie(int movieId)
+        {
+            try
+            {
+                var results = await _actorRepository.GetActorsByMovieIdAsync(movieId);
+
+                if (!results.Any()) return NotFound("No actors found associated with the movie.");
+
+                return Ok(_mapper.Map<ActorModel[]>(results));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Adds the requested Actor to the database.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>
+        /// An <code>ActionResult</code> containing:
+        /// a <code>Created</code> status code with an ActorModel,
+        /// a <code>Conflict</code> status code if there is a conflict with creating the actor,
+        /// a <code>NotModified</code> status code if the actor was not created,
+        /// a <code>InternalServerError</code> if there is an issue with creating the actor
+        /// </returns>
         /// <response code="201">Returns the newly created actor</response>
-        /// <response code="400">If the actor model is null</response>
+        /// <response code="409">If there is a conflict with creating the actor</response>
+        /// <response code="304">If the actor was not created</response>
+        /// <response code="500">If there is an issue with creating the actor</response>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -115,12 +176,12 @@ namespace MediaCatalog.API.Controllers
                 var existing = _actorRepository.GetActorByNameAsync(model.LastName, model.FirstName);
 
                 if (existing != null)
-                    return BadRequest(
+                    return Conflict(
                         $"The actor, {model.FirstName} {model.LastName}, already exists in the database.");
 
                 var actor = _mapper.Map<Actor>(model);
 
-                actor.Id = await _actorRepository.GenerateActorId();
+                actor.Id = _actorRepository.GenerateActorId();
                 var location = _linkGenerator.GetPathByAction("Get", "Actors", new { actorId = actor.Id });
 
                 _actorRepository.Add(actor);
@@ -129,17 +190,18 @@ namespace MediaCatalog.API.Controllers
                 {
                     return Created(location, _mapper.Map<ActorModel>(actor));
                 }
+
+                return Problem($"The actor, {model.FirstName} {model.LastName}, was not created.", "Add Actor",
+                    StatusCodes.Status304NotModified);
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
-            return BadRequest();
         }
 
         /// <summary>
-        ///
+        /// Connects the associated Movie and Actor in the database.
         /// </summary>
         /// <param name="actorId"></param>
         /// <param name="movieId"></param>
@@ -155,9 +217,9 @@ namespace MediaCatalog.API.Controllers
 
                 if (!movieExists) return BadRequest($"The movie id, {movieId}, does not exist.");
 
-                var actor = _actorRepository.GetActorAync(actorId);
+                var actor = await _actorRepository.GetActorAsync(actorId);
 
-                var location = _linkGenerator.GetPathByAction("Get", "Actors", new { actorId = actorId });
+                var location = _linkGenerator.GetPathByAction("Get", "Actors", new { actorId });
 
                 var actorMovie = new ActorMovie
                 {
@@ -171,13 +233,14 @@ namespace MediaCatalog.API.Controllers
                 {
                     return Created(location, _mapper.Map<ActorModel>(actor));
                 }
+
+                return Problem($"The actor, {actor.FirstName} {actor.LastName}, was added to the movie.",
+                    "Post", StatusCodes.Status304NotModified);
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
-            return BadRequest();
         }
     }
 }
