@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediaCatalog.API.Data.Repositories;
@@ -53,6 +54,9 @@ namespace MediaCatalog.API.Controllers
         /// <response code="404">If no directors can be found.</response>
         /// <response code="500">If there is an issue with the retrieval of the data.</response>
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<DirectorModel[]>> Get()
         {
             try
@@ -67,6 +71,99 @@ namespace MediaCatalog.API.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
+        }
+
+        /// <summary>
+        /// ToDo create method body retrieving a specific director by id, should return a 200, 404, or 500 error depending on what happens
+        /// </summary>
+        /// <param name="directorId"></param>
+        /// <returns></returns>
+        [HttpGet("{directorId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<DirectorModel>> Get(int directorId)
+        {
+            try
+            {
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// ToDo Create method body for searching for a director(s) by a value, should return a 200, 404, or 500 error depending on what happens
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [HttpGet("{value}")]
+        [Route("search")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<DirectorModel[]>> SearchDirectorNames(string value)
+        {
+            try
+            {
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// ToDo Create method body to retrieve directors associated with a specific movie, should return a 200, 404, or 500 error depending on what happens
+        /// </summary>
+        /// <param name="movieId"></param>
+        /// <returns></returns>
+        [HttpGet("{movieId}")]
+        [Route("searchMovieDirectors")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<DirectorModel[]>> GetDirectorsAssociatedWithMovie(int movieId)
+        {
+            try
+            {
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// ToDo Create method body to add a director to the database, should return a 201 or 500 error depending on what happens
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<DirectorModel>> Post(DirectorModel model)
+        {
+            try
+            {
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+
+            throw new NotImplementedException();
         }
     }
 }
