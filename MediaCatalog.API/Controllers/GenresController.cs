@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using MediaCatalog.API.Data.Repositories;
-using MediaCatalog.API.Models;
+using MediaCatalog.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;

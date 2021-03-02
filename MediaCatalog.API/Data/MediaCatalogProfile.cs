@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using MediaCatalog.API.Data.Entities;
-using MediaCatalog.API.Models;
+using MediaCatalog.Models;
 
 namespace MediaCatalog.API.Data
 {

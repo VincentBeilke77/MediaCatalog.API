@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using MediaCatalog.API.Data.Repositories;
-using MediaCatalog.API.Models;
+using MediaCatalog.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
@@ -131,10 +131,15 @@ namespace MediaCatalog.API.Controllers
         }
 
         /// <summary>
+        /// ToDo Create method body to retrieve actors associated with a specific movie, should return a 200, 404, or 500 error depending on what happens
         ///
         /// </summary>
         /// <param name="movieId"></param>
         /// <returns></returns>
+        [HttpGet("movie/{movieId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ActorModel[]>> GetActorsAssociatedWithMovie(int movieId)
         {
             try
