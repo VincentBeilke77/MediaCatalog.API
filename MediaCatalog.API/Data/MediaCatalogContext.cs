@@ -1,5 +1,5 @@
 ﻿using MediaCatalog.API.Data.Entities;
-using MediaCatalog.API.Models;
+using MediaCatalog.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 

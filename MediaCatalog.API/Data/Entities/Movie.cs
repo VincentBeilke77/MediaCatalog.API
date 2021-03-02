@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using MediaCatalog.API.Models;
+using MediaCatalog.Models;
 
 namespace MediaCatalog.API.Data.Entities
 {

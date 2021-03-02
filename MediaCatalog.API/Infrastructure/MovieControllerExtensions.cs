@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using MediaCatalog.API.Controllers;
 using MediaCatalog.API.Data.Entities;
-using MediaCatalog.API.Models;
+using MediaCatalog.Models;
 
 namespace MediaCatalog.API.Infrastructure
 {
