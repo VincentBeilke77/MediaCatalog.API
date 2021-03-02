@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediaCatalog.API.Data.Repositories;
-using MediaCatalog.API.Models;
+using MediaCatalog.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
@@ -125,8 +125,7 @@ namespace MediaCatalog.API.Controllers
         /// </summary>
         /// <param name="movieId"></param>
         /// <returns></returns>
-        [HttpGet("{movieId}")]
-        [Route("searchMovieDirectors")]
+        [HttpGet("search/{movieId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
