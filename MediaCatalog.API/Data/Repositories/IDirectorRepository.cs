@@ -15,6 +15,8 @@ namespace MediaCatalog.API.Data.Repositories
 
         Task<Director> GetDirectorAsync(int directorId);
 
+        Task<Director[]> SearchByDirectorsName(string search);
+
         Task<Director[]> GetDirectorsByMovieIdAsync(int movieId);
 
         Task<Director> GetDirectorByNameAsync(string lastName, string firstName);

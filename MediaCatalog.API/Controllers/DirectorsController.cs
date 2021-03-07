@@ -74,10 +74,18 @@ namespace MediaCatalog.API.Controllers
         }
 
         /// <summary>
-        /// ToDo create method body retrieving a specific director by id, should return a 200, 404, or 500 error depending on what happens
+        /// Retrieves the director linked to the id.
         /// </summary>
-        /// <param name="directorId"></param>
-        /// <returns></returns>
+        /// <param name="directorId">Id of the director being looked for.</param>
+        /// <returns>
+        /// An <code>ActionResult</code> containing:
+        /// a <code>Ok</code> status code with the director related to the id,
+        /// a <code>NotFound</code> status code if no director was found,
+        /// or a <code>InternalServerError</code> if there is an issue with retrieving the data.
+        /// </returns>
+        /// <response code="200">Returns an <code>ActionResult</code> containing a <code>DirectorModel</code>.</response>
+        /// <response code="404">If a director cannot be found with the requested id.</response>
+        /// <response code="500">If there is an issue with the retrieval of the data.</response>
         [HttpGet("{directorId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -86,37 +94,49 @@ namespace MediaCatalog.API.Controllers
         {
             try
             {
+                var result = await _directorRepository.GetDirectorAsync(directorId);
+
+                if (result == null) return NotFound($"No director with id, {directorId}, was found.");
+
+                return Ok(_mapper.Map<DirectorModel>(result));
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
-                throw;
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
-            throw new NotImplementedException();
         }
 
         /// <summary>
-        /// ToDo Create method body for searching for a director(s) by a value, should return a 200, 404, or 500 error depending on what happens
+        /// Retrieves any Directors with the requested search value, and any associated entities.
         /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <param name="search">A <code>String</code>search value for searching all the director's names.</param>>
+        /// <returns>
+        /// An <code>ActionResult</code> containing:
+        /// a <code>Ok</code> status code with the list of directors that fit the search value,
+        /// a <code>NotFound</code> status code if nothing is found,
+        /// or a <code>InternalServerError</code> if there is an issue with retrieving the data.
+        /// </returns>
+        /// <response code="200">Returns an <code>ActionResult</code> containing a <code>DirectorModel[]</code>.</response>
+        /// <response code="404">If no directors can be found containing the search value.</response>
+        /// <response code="500">If there is an issue with the retrieval of the data.</response>
         [HttpGet("search/{value}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<DirectorModel[]>> SearchDirectorNames(string value)
+        public async Task<ActionResult<DirectorModel[]>> SearchByDirectorName(string search)
         {
             try
             {
+                var results = await _directorRepository.SearchByDirectorsName(search);
+
+                if (!results.Any()) return NotFound($"No directors with {search} in them where found.");
+
+                return Ok(_mapper.Map<DirectorModel[]>(results));
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
-                throw;
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
-            throw new NotImplementedException();
         }
 
         /// <summary>

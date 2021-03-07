@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using MediaCatalog.API.Data.Entities;
@@ -43,6 +44,21 @@ namespace MediaCatalog.API.Data.Repositories
             query = query.Where(d => d.Id == directorId);
 
             return await query.FirstOrDefaultAsync();
+        }
+
+        public async Task<Director[]> SearchByDirectorsName(string search)
+        {
+            _logger.LogInformation($"Search directors that might contain {search}");
+
+            IQueryable<Director> query = _context.Directors
+                .Include(dm => dm.DirectorMovies)
+                .ThenInclude(m => m.Movie);
+
+            query = query.Where(d => d.FirstName.Contains(search)
+                                     || d.LastName.Contains(search)
+                                     || d.FullName.Contains(search));
+
+            return await query.ToArrayAsync();
         }
 
         public async Task<Director[]> GetDirectorsByMovieIdAsync(int movieId)
