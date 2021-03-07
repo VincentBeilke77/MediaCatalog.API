@@ -177,6 +177,32 @@ namespace MediaCatalog.API.Controllers
         }
 
         /// <summary>
+        /// ToDo Create method body to retrieve actors associated with a specific movie, should return a 200, 404, or 500 error depending on what happens
+        ///
+        /// </summary>
+        /// <param name="movieId"></param>
+        /// <returns></returns>
+        [HttpGet("actors/{movieId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<ActorModel[]>> GetActorsAssociatedWithMovie(int movieId)
+        {
+            try
+            {
+                var results = await ActorRepository.GetActorsByMovieIdAsync(movieId);
+
+                if (!results.Any()) return NotFound("No actors found associated with the movie.");
+
+                return Ok(_mapper.Map<ActorModel[]>(results));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        /// <summary>
         /// Creates a new Movie, and returns the newly created Movie.
         /// </summary>
         /// <param name="model">The <code>MovieModel</code> containing the new movie to be updated.</param>
