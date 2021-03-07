@@ -20,6 +20,7 @@ namespace MediaCatalog.API.Data
         public DbSet<Genre> Genres { get; set; }
         public DbSet<MediaType> MediaType { get; set; }
         public DbSet<Rating> Ratings { get; set; }
+        public DbSet<MediaImage> MediaImages { get; set; }
         public DbSet<Studio> Studios { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

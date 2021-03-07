@@ -113,6 +113,33 @@ namespace MediaCatalog.API.Data.Repositories
         /// </summary>
         /// <param name="title"></param>
         /// <returns></returns>
+        public async Task<Movie[]> GetFavoriteMovies()
+        {
+            _logger.LogInformation($"Getting movies that are marked as favorite.");
+
+            IQueryable<Movie> query = _context.Movies
+                .Include(m => m.Rating)
+                .Include(gm => gm.MovieGenres)
+                .ThenInclude(g => g.Genre)
+                .Include(am => am.MovieActors)
+                .ThenInclude(a => a.Actor)
+                .Include(dm => dm.MovieDirectors)
+                .ThenInclude(d => d.Director)
+                .Include(mtm => mtm.MovieMediaTypes)
+                .ThenInclude(mt => mt.MediaType)
+                .Include(sm => sm.MovieStudios)
+                .ThenInclude(s => s.Studio);
+
+            query = query.Where(m => m.Favorite);
+
+            return await query.ToArrayAsync();
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="title"></param>
+        /// <returns></returns>
         public bool CheckForExistingMovie(string title)
         {
             var exists = _context.Movies.Any(m => m.Title == title);
