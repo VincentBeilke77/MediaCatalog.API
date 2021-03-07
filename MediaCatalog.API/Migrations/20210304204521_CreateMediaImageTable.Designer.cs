@@ -4,14 +4,16 @@ using MediaCatalog.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MediaCatalog.API.Migrations
 {
     [DbContext(typeof(MediaCatalogContext))]
-    partial class MediaCatalogContextModelSnapshot : ModelSnapshot
+    [Migration("20210304204521_CreateMediaImageTable")]
+    partial class CreateMediaImageTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

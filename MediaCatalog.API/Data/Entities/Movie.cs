@@ -21,6 +21,7 @@ namespace MediaCatalog.API.Data.Entities
 
         public Rating Rating { get; set; }
 
+        public MediaImage MediaImage { get; set; }
         public ICollection<ActorMovie> MovieActors { get; set; }
         public ICollection<DirectorMovie> MovieDirectors { get; set; }
         public ICollection<GenreMovie> MovieGenres { get; set; }

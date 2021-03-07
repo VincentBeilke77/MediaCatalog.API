@@ -18,4 +18,10 @@
     <ProjectReference Include="..\..\MediaCatalog.API\MediaCatalog.API.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="MediaCatalog.Models">
+      <HintPath>..\..\..\..\Libraries\MediaCatalog.Models\bin\Debug\netcoreapp3.1\MediaCatalog.Models.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

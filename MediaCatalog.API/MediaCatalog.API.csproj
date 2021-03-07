@@ -7,6 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20210304202638_CreateMediaImageTable.cs" />
+    <Compile Remove="Migrations\20210304202638_CreateMediaImageTable.Designer.cs" />
+    <Compile Remove="Migrations\20210304205329_UpdateMediaMovieConnection.cs" />
+    <Compile Remove="Migrations\20210304205329_UpdateMediaMovieConnection.Designer.cs" />
+    <Compile Remove="Migrations\20210304205625_UpdateMediaMovieConnection.cs" />
+    <Compile Remove="Migrations\20210304205625_UpdateMediaMovieConnection.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.4" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="4.1.1" />
@@ -31,4 +40,6 @@
       <HintPath>..\..\..\Libraries\MediaCatalog.Models\bin\Debug\netcoreapp3.1\MediaCatalog.Models.dll</HintPath>
     </Reference>
   </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties package_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 </Project>

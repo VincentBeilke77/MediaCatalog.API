@@ -101,8 +101,7 @@ namespace MediaCatalog.API.Controllers
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        [HttpGet("{value}")]
-        [Route("search")]
+        [HttpGet("search/{value}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

@@ -8,7 +8,7 @@ using MediaCatalog.API.Controllers;
 using MediaCatalog.API.Data;
 using MediaCatalog.API.Data.Entities;
 using MediaCatalog.API.Data.Repositories;
-using MediaCatalog.API.Models;
+using MediaCatalog.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Routing;

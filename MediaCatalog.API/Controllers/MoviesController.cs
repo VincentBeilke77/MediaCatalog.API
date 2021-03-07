@@ -87,6 +87,36 @@ namespace MediaCatalog.API.Controllers
         }
 
         /// <summary>
+        /// Retrieves all the Movies in the Media Catalog database, and all associated entities
+        /// that are marked as favorite.
+        /// </summary>
+        /// <returns>
+        /// An <code>ActionResult</code> containing:
+        /// a <code>Ok</code> status code with the list of movies,
+        /// a <code>NotFound</code> status code if nothing is found,
+        /// or a <code>InternalServerError</code> if there is an issue with retrieving the data.
+        /// </returns>
+        /// <response code="200">Returns an <code>ActionResult</code> containing a <code>MovieModel[]</code>.</response>
+        /// <response code="404">If no movies can be found.</response>
+        /// <response code="500">If there is an issue with the retrieval of the data.</response>
+        [HttpGet("favorite")]
+        public async Task<ActionResult<MovieModel[]>> GetFavoriteMovies()
+        {
+            try
+            {
+                var results = await _movieRepository.GetFavoriteMovies();
+
+                if (results.Length == 0) return NotFound("No movies found.");
+
+                return Ok(_mapper.Map<MovieModel[]>(results));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        /// <summary>
         /// Retrieves the Movie linked to the id, along with all associated entities.
         /// </summary>
         /// <param name="movieId">Id of the movie being looked for.</param>
